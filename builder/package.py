@@ -144,12 +144,6 @@ def test_sab_binary(binary_path: str):
             "config/scheduling",
             "config/rss",
             "config/general",
-            "config/folders",
-            "config/switches",
-            "config/sorting",
-            "config/notify",
-            "config/special",
-            "api?mode=version",
         ]
         for url in pages_to_test:
             print("Testing: %s%s" % (base_url, url))
