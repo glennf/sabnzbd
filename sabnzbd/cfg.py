@@ -668,6 +668,11 @@ nscript_prio_error = OptionBool("nscript", "nscript_prio_error", False)
 nscript_prio_queue_done = OptionBool("nscript", "nscript_prio_queue_done", False)
 nscript_prio_other = OptionBool("nscript", "nscript_prio_other", True)
 
+# [quota_email]
+quota_email_75 = OptionBool("quota_email", "quota_email_75", False)
+quota_email_90 = OptionBool("quota_email", "quota_email_90", False)
+quota_email_100 = OptionBool("quota_email", "quota_email_100", False)
+
 
 ##############################################################################
 # Set root folders for Folder config-items

@@ -38,6 +38,7 @@ from sabnzbd.encoding import utob
 from sabnzbd.filesystem import make_script_path
 from sabnzbd.misc import build_and_run_command, int_conv
 from sabnzbd.newsunpack import create_env
+from sabnzbd.emailer import send_quota_email
 
 if sabnzbd.WIN32:
     try:
@@ -85,6 +86,9 @@ NOTIFICATION_TYPES = {
     "queue_done": TT("Queue finished"),  #: Notification
     "new_login": TT("User logged in"),  #: Notification
     "other": TT("Other Messages"),  #: Notification
+    "quota_75": TT("Quota 75% Reached"),  #: Notification
+    "quota_90": TT("Quota 90% Reached"),  #: Notification
+    "quota_100": TT("Quota 100% Reached"),  #: Notification
 }
 
 NOTIFICATION_ACTIONS = {
@@ -321,6 +325,12 @@ def send_apprise(title, msg, notification_type, force=False, test=None):
         "new_login": apprise.common.NotifyType.INFO,
         # Other Messages
         "other": apprise.common.NotifyType.INFO,
+        # Quota 75% Reached
+        "quota_75": apprise.common.NotifyType.WARNING,
+        # Quota 90% Reached
+        "quota_90": apprise.common.NotifyType.WARNING,
+        # Quota 100% Reached
+        "quota_100": apprise.common.NotifyType.FAILURE,
     }
 
     # Prepare our Asset Object
@@ -545,3 +555,25 @@ def send_windows(title: str, msg: str, notification_type: str, actions: Optional
         logging.debug("Traceback: ", exc_info=True)
         return T("Failed to send Windows notification")
     return None
+
+
+def check_quota_usage():
+    """Check quota usage and send notifications"""
+    quota_size = sabnzbd.cfg.quota_size()
+    if not quota_size:
+        return
+
+    quota_used = sabnzbd.BPSMeter.grand_total.get("total", 0)
+    quota_percentage = (quota_used / quota_size) * 100
+
+    if quota_percentage >= 75 and sabnzbd.cfg.quota_email_75():
+        send_quota_email(75, quota_used, quota_size)
+        send_notification("Quota Usage", "Quota usage has reached 75%", "quota_75")
+
+    if quota_percentage >= 90 and sabnzbd.cfg.quota_email_90():
+        send_quota_email(90, quota_used, quota_size)
+        send_notification("Quota Usage", "Quota usage has reached 90%", "quota_90")
+
+    if quota_percentage >= 100 and sabnzbd.cfg.quota_email_100():
+        send_quota_email(100, quota_used, quota_size)
+        send_notification("Quota Usage", "Quota usage has reached 100%", "quota_100")

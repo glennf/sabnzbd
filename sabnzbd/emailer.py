@@ -295,3 +295,14 @@ def _prepare_message(txt):
 
     msg.set_content("\n".join(payload))
     return msg.as_bytes(policy=msg.policy.clone(linesep="\r\n"))
+
+
+def send_quota_email(quota_percentage, quota_used, quota_size):
+    """Send email notification for quota usage"""
+    parm = {
+        "quota_percentage": quota_percentage,
+        "quota_used": to_units(quota_used),
+        "quota_size": to_units(quota_size),
+        "date": get_email_date(),
+    }
+    return send_with_template("quota", parm)

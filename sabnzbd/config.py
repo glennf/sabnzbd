@@ -1264,3 +1264,9 @@ def decode_password(pw: str, name: str) -> str:
 def create_api_key():
     """Return a new randomized API_KEY"""
     return uuid.uuid4().hex
+
+
+# Add the new options to the OptionBool class
+quota_email_75 = OptionBool("quota_email", "quota_email_75", False)
+quota_email_90 = OptionBool("quota_email", "quota_email_90", False)
+quota_email_100 = OptionBool("quota_email", "quota_email_100", False)

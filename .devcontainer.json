@@ -1,0 +1,5 @@
+{
+  "tasks": {
+    "test": "sudo apt-get install unrar 7zip par2 && pip install --upgrade pip wheel && pip install --upgrade -r requirements.txt --no-dependencies && pip install --upgrade -r tests/requirements.txt && pytest -s"
+  }
+}
